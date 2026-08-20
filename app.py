@@ -21,7 +21,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 import os 
 # Securely load the Paystack Secret Key from environment variables
-PAYSTACK_SECRET_Key = os.environ.get("PAYSTACK_SECRET_KEY")
+PAYSTACK_SECRET_KEY = os.environ.get("PAYSTACK_SECRET_KEY")
 
 def init_db():
   conn = sqlite3.connect("schools.db")
