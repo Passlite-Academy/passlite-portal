@@ -19,9 +19,9 @@ UPLOAD_FOLDER = "static/uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Replace with your actual Paystack Secret Key (e.g., sk_test_...)
-PAYSTACK_SECRET_Key = "sk_test_58bf1653a7df9cc3ecc6bbf3880e059a877ab46e"
-
+import os 
+# Securely load the Paystack Secret Key from environment variables
+PAYSTACK_SECRET_Key = os.environ.get("PAYSTACK_SECRET_KEY")
 
 def init_db():
   conn = sqlite3.connect("schools.db")
