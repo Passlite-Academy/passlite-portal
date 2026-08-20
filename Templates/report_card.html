@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ student_name }} - Terminal Report Sheet</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; color: #000; margin: 0; padding: 20px; background: #fff; }
+        .report-container { max-width: 800px; margin: auto; border: 2px solid #002D62; padding: 15px; }
+        .header-table { width: 100%; border-collapse: collapse; border-bottom: 3px solid #002D62; padding-bottom: 10px; margin-bottom: 10px; }
+        .header-table td { vertical-align: middle; }
+        .school-title { text-align: center; color: #002D62; font-size: 22px; font-weight: bold; margin: 0; }
+        .school-info { text-align: center; font-size: 11px; color: #333; margin: 3px 0; }
+        .badge { width: 70px; height: 70px; }
+        .sub-header { background: #002D62; color: white; text-align: center; font-weight: bold; font-size: 13px; padding: 4px; margin-bottom: 8px; }
+        .bio-table, .subject-table, .summary-table, .skills-table, .bills-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+        .bio-table td { padding: 3px 5px; font-size: 11px; }
+        .subject-table th, .subject-table td { border: 1px solid #999; padding: 4px; text-align: center; font-size: 11px; }
+        .subject-table th { background: #e6ecf5; color: #000; }
+        .subject-table td:first-child { text-align: left; font-weight: bold; }
+        .skills-table th, .skills-table td, .bills-table th, .bills-table td { border: 1px solid #999; padding: 3px; font-size: 10px; text-align: center; }
+        .skills-table th { background: #f2f2f2; }
+        .print-btn { text-align: center; margin-bottom: 20px; }
+        @media print {
+            .print-btn { display: none; }
+            body { padding: 0; background: none; }
+            .report-container { border: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="print-btn">
+        <button onclick="window.print()" style="padding: 10px 20px; background: #002D62; color: white; font-size: 14px; font-weight: bold; border: none; cursor: pointer;">Print / Save as PDF</button>
+    </div>
+
+    <div class="report-container">
+        <!-- HEADER -->
+        <table class="header-table">
+            <tr>
+                <td style="width: 15%; text-align: left;">
+                    {% if logo_filename %}
+                        <img src="{{ url_for('static', filename='uploads/' + logo_filename) }}" class="badge">
+                    {% else %}
+                        <div style="width: 70px; height: 70px; border: 1px dashed #ccc; text-align: center; line-height: 70px; font-size: 9px;">LOGO</div>
+                    {% endif %}
+                </td>
+                <td style="width: 70%;">
+                    <h1 class="school-title">{{ school_name }}</h1>
+                    <div class="school-info">{{ school_address }}</div>
+                    <div class="school-info"><b>MOTTO:</b> {{ school_motto }}</div>
+                    <div class="school-info"><b>PHONE:</b> {{ school_phone }} | <b>EMAIL:</b> {{ school_email }}</div>
+                </td>
+                <td style="width: 15%;"></td>
+            </tr>
+        </table>
+
+        <div class="sub-header">TERMINAL REPORT SHEET</div>
+
+        <!-- BIO TABLE -->
+        <table class="bio-table">
+            <tr>
+                <td><b>CONTINUOUS ASSESSMENT:</b> 2025/2026 SESSION</td>
+                <td><b>TERM:</b> Second Term</td>
+                <td><b>DEPARTMENT:</b> {{ department }}</td>
+            </tr>
+            <tr>
+                <td><b>STUDENT NAME:</b> {{ student_name }}</td>
+                <td><b>STUDENT NO:</b> {{ student_id }}</td>
+                <td><b>CLASS:</b> {{ student_class }}</td>
+            </tr>
+            <tr>
+                <td><b>DOS:</b> {{ dos }}</td>
+                <td><b>ATTENDANCE:</b> {{ attendance }}</td>
+                <td><b>ABSENT:</b> {{ absent }} | <b>NO. IN CLASS:</b> {{ no_in_class }}</td>
+            </tr>
+        </table>
+
+        <!-- SUBJECTS TABLE -->
+        <table class="subject-table">
+            <thead>
+                <tr>
+                    <th style="width: 25%; text-align: left;">SUBJECT</th>
+                    <th>TEST (40)</th>
+                    <th>EXAM (60)</th>
+                    <th>TOTAL (100)</th>
+                    <th>LAST CUMM</th>
+                    <th>CUMM (100)</th>
+                    <th>Grade</th>
+                    <th>Position</th>
+                    <th style="width: 20%;">REMARKS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sub in active_subjects %}
+                <tr>
+                    <td style="text-align: left;">{{ sub.name }}</td>
+                    <td>{{ sub.test }}</td>
+                    <td>{{ sub.exam }}</td>
+                    <td><b>{{ sub.total }}</b></td>
+                    <td>{{ sub.cumm }}</td>
+                    <td>{{ sub.total }}</td>
+                    <td><b>{{ sub.grade }}</b></td>
+                    <td>{{ sub.position }}</td>
+                    <td>{{ sub.remark }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- SUMMARY BAR -->
+        <table class="subject-table" style="background: #f9f9f9;">
+            <tr>
+                <td><b>Total Marks:</b> {{ max_possible_marks }}</td>
+                <td><b>Obtained Marks:</b> {{ total_obtained_marks }}</td>
+                <td><b>Percentage:</b> {{ percentage }}%</td>
+                <td><b>Grade:</b> {{ overall_grade }}</td>
+            </tr>
+        </table>
+
+        <!-- PSYCHOMOTOR & EFFECTIVE AREAS -->
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 8px;">
+            <tr>
+                <td style="width: 48%; vertical-align: top;">
+                    <table class="skills-table">
+                        <tr><th colspan="4">PSYCHOMOTOR SKILLS</th></tr>
+                        <tr><th style="text-align: left;">Skill</th><th>1</th><th>2</th><th>3</th></tr>
+                        {% for label, val in psychos.items() %}
+                        <tr>
+                            <td style="text-align: left;">{{ label }}</td>
+                            <td>{% if val == '1' %}✔{% endif %}</td>
+                            <td>{% if val == '2' %}✔{% endif %}</td>
+                            <td>{% if val == '3' %}✔{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                    <div style="font-size: 10px; margin-top: 5px;"><b>AWARD WON:</b> {{ award_won }}</div>
+                </td>
+                <td style="width: 4%;"></td>
+                <td style="width: 48%; vertical-align: top;">
+                    <table class="skills-table">
+                        <tr><th colspan="4">EFFECTIVE AREAS</th></tr>
+                        <tr><th style="text-align: left;">Trait</th><th>1</th><th>2</th><th>3</th></tr>
+                        {% for label, val in traits.items() %}
+                        <tr>
+                            <td style="text-align: left;">{{ label }}</td>
+                            <td>{% if val == '1' %}✔{% endif %}</td>
+                            <td>{% if val == '2' %}✔{% endif %}</td>
+                            <td>{% if val == '3' %}✔{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <div style="font-size: 10px; background: #eee; text-align: center; padding: 3px; margin-bottom: 8px;">
+            SCALE: 1. Very Good &nbsp;&nbsp;|&nbsp;&nbsp; 2. Good &nbsp;&nbsp;|&nbsp;&nbsp; 3. Below Average
+        </div>
+
+        <!-- BILLS & DATES -->
+        <table class="bills-table">
+            <tr>
+                <th colspan="6" style="background: #002D62; color: white;">NEXT TERM BILLS</th>
+            </tr>
+            <tr>
+                <th>DEBT</th>
+                <th>SCHOOL FEES</th>
+                <th>COMPUTER</th>
+                <th>LESSONS</th>
+                <th>UTILITY</th>
+                <th>TOTAL</th>
+            </tr>
+            <tr>
+                <td>₦{{ bill_debt }}</td>
+                <td>₦{{ bill_fees }}</td>
+                <td>₦{{ bill_computer }}</td>
+                <td>₦{{ bill_lessons }}</td>
+                <td>₦{{ bill_utility }}</td>
+                <td><b>₦{{ total_bill }}</b></td>
+            </tr>
+        </table>
+
+        <table style="width: 100%; font-size: 11px; margin-top: 5px;">
+            <tr>
+                <td><b>Vacation Date:</b> {{ vacation_date }}</td>
+                <td style="text-align: right;"><b>Next term Resumption Date:</b> {{ resumption_date }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding-top: 5px;"><b>Class Teacher's Comment:</b> {{ class_teacher_comment }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding-top: 5px;"><b>Head Teacher's Comment:</b> {{ head_teacher_comment }}</td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>
