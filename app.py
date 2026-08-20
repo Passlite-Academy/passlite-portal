@@ -68,7 +68,7 @@ def initialize_payment():
   # Initialize transaction with Paystack API
   url = "https://api.paystack.co/transaction/initialize"
   headers = {
-      "Authorization": f"Bearer {PAYSTACK_SECRET_Key}",
+      "Authorization": f"Bearer {PAYSTACK_SECRET_KEY}",
       "Content-Type": "application/json",
   }
   data = {
@@ -107,7 +107,7 @@ def payment_callback():
   reference = request.args.get("reference")
 
   url = f"https://api.paystack.co/transaction/verify/{reference}"
-  headers = {"Authorization": f"Bearer {PAYSTACK_SECRET_Key}"}
+  headers = {"Authorization": f"Bearer {PAYSTACK_SECRET_KEY}"}
   response = requests.get(url, headers=headers)
   res_data = response.json()
 
